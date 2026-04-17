@@ -76,7 +76,7 @@ nav {
     position: fixed;
     top: 64px;
     left: 0;
-    width: 80px;
+    width: 68px;
     height: calc(100vh - 64px);
     background-color: #2563EB;
     display: flex;
@@ -114,7 +114,7 @@ nav {
 .content {
     margin-left: 68px;
     margin-top: 64px;
-    padding: 36px 40px;
+    padding: 36px 40px 40px;
     flex-grow: 1;
 }
 
@@ -390,8 +390,19 @@ nav {
     .course-grid {
         grid-template-columns: 1fr;
     }
+    .sidebar {
+        width: 100%;
+        height: 56px;
+        top: auto;
+        bottom: 0;
+        flex-direction: row;
+        padding: 0 8px;
+        gap: 0;
+        justify-content: space-around;
+    }
     .content {
-        padding: 24px 16px;
+        margin-left: 0;
+        padding: 80px 16px 24px;
     }
     .toolbar {
         flex-direction: column;
@@ -485,30 +496,6 @@ nav {
 }
 
 .submit-btn:hover { background: #1D4ED8; }
-
-/* ── SIDEBAR OVERLAY ── */
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 98;
-}
-.sidebar.mobile-open + .sidebar-overlay,
-body.menu-open .sidebar-overlay {
-    display: block;
-}
-
-/* ── HAMBURGER ── */
-.hamburger-btn {
-    display: none !important;
-}
-
-@media (max-width: 640px) {
-    .hamburger-btn { display: flex !important; }
-    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
-    .sidebar.mobile-open { transform: translateX(0); }
-}
 
 /* ── ANIMATIONS ── */
 @keyframes slideUp {
