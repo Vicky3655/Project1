@@ -28,25 +28,25 @@
                 <h1>Welcome to Talent Flow!</h1>
                 <p>Create Your Account</p>
 
-                <form id="registerForm">
+                <form id="registerForm" onsubmit="event.preventDefault(); Register();">
 
                     <label for="Name">Name</label><br>
-                    <input type="text" id="Name" placeholder="Enter your name"><br><br>
+                    <input type="text" id="Name" placeholder="Enter your name" required><br><br>
 
                     <label for="Email">Email</label><br>
-                    <input type="email" id="Email" placeholder="Username@gmail.com"><br><br>
+                    <input type="email" id="Email" placeholder="Username@gmail.com" required><br><br>
 
                     <label for="password">Password</label><br>
-                    <input type="password" id="password" placeholder="Enter your password"><br><br>
+                    <input type="password" id="password" placeholder="Enter your password" required><br><br>
 
                     <label for="role-select">Choose a role:</label><br>
-                    <select id="role-select">
+                    <select id="role-select" required>
                         <option value="">--Please choose an option--</option>
                         <option value="instructor">Instructor</option>
                         <option value="student">Student</option>
                     </select><br><br>
 
-                    <button type="button" class="sign" onclick="Register()">
+                    <button type="submit" class="sign">
                         Create Account
                     </button>
 
@@ -81,17 +81,12 @@
 
             const url = 'https://truemind.onrender.com/api/v1/auth/register/';
             
-            // To ensure unique usernames, append random digits if needed or rely on lowercasing.
-            const safeUsername = name.split(' ')[0].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
-
             btn.textContent = "Creating Account...";
             btn.disabled = true;
 
             axios.post(url, {
-                username: safeUsername,
+                name: name,
                 email: email,
-                first_name: name.split(' ')[0] || '',
-                last_name: name.split(' ')[1] || '',
                 password: password,
                 confirm_password: password,
                 role: role
@@ -118,6 +113,7 @@
         }
 
     </script>
+
 
 </body>
 </html>
