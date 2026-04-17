@@ -104,10 +104,17 @@ function Login() {
         msgBlock.textContent = "Success! Redirecting...";
         msgBlock.style.color = "green";
         messageDiv.style.display = "block";
-        
+
+        const role = (response.data.user?.role || '').toLowerCase();
         setTimeout(() => {
-            window.location.href = "main1.html";
+            if (role === 'student') {
+                window.location.href = "selected.html";
+            } else {
+                // instructor or admin
+                window.location.href = "courses.html";
+            }
         }, 800);
+
     })
     .catch(err => {
         logBtn.textContent = "Login";
