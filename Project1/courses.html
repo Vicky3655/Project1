@@ -69,7 +69,7 @@
     <main class="content">
         <div class="content-header">
             <h1>Courses</h1>
-            <button class="add-btn">
+            <button class="add-btn" style="display:none;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -80,11 +80,11 @@
             <!-- Filter + Search + Sort -->
             <div class="toolbar">
                 <div class="filters">
-                    <button class="filter-btn active">All</button>
-                    <button class="filter-btn">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="published">
                         <span class="dot published"></span> Published
                     </button>
-                    <button class="filter-btn">
+                    <button class="filter-btn" data-filter="draft">
                         <span class="dot draft"></span> Draft
                     </button>
                 </div>
@@ -95,33 +95,50 @@
                     <input type="text" placeholder="Search">
                 </div>
                 <button class="sort-btn">
-                    Sort by course name
+                    Sort by name
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </button>
+                
                 <div id="add-course-modal" class="modal">
-                <div class="modal-content">
-                   <button class="close-btn">&times;</button>
-                   <h2>Add New Course</h2>
-                   <form id="add-course-form">
-                   <label>Course Title</label>
-                    <input type="text" name="title" required placeholder="e.g., Advanced JavaScript">
-                    <label>Thumbnail URL</label>
-                    <input type="url" name="thumb" placeholder="https://...">
-                    <label>Number of Lessons</label>
-                    <input type="number" name="lessons" min="1" value="1">
-                    <label>Status</label>
-                    <select name="status">
-                    <option value="draft">Draft</option>
-                   <option value="published">Published</option>
-                   </select>
-                  <button type="submit" class="submit-btn">Create Course</button>
-                  </form>
-                </div>
+                    <div class="modal-content">
+                        <button class="close-btn">&times;</button>
+                        <h2 id="modal-title">Add New Course</h2>
+                        <form id="add-course-form">
+                            <input type="hidden" name="id">
+                            <label>Course Title</label>
+                            <input type="text" name="title" required placeholder="e.g., Advanced JavaScript">
+                            
+                            <label>Description</label>
+                            <textarea name="description" required placeholder="Course details..." style="width:100%; border-radius:8px; border:1px solid #E2E8F0; padding:10px; font-family:inherit; min-height:80px;"></textarea>
+
+                            <label>Difficulty Level</label>
+                            <select name="difficulty" required>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+
+                            <label>Thumbnail URL</label>
+                            <input type="url" name="thumb" placeholder="https://...">
+                            
+                            <label>Duration (Hours)</label>
+                            <input type="number" name="duration" min="0" value="0">
+                            
+                            <label>Status</label>
+                            <select name="status">
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                            </select>
+                            
+                            <button type="submit" class="submit-btn">Save Course</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="sidebar-overlay"></div>
-               </div>
+            </div>
+
 
             <!-- Course Grid -->
             <div class="course-grid">

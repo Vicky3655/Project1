@@ -218,6 +218,19 @@ nav {
     background-color: #CBD5E1;
 }
 
+.diff-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.diff-beginner { background-color: #22C55E; }
+.diff-intermediate { background-color: #F59E0B; }
+.diff-advanced { background-color: #EF4444; }
+
+
 .search-wrap {
     flex: 1;
     max-width: 320px;

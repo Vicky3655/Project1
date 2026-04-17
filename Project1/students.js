@@ -92,9 +92,10 @@ function render() {
                 <td>
                     <div class="action-btns">
                         <button class="btn-edit" onclick="openEdit(${s.id})">Edit</button>
-                        <button class="btn-del"  onclick="openDelete(${s.id})">Delete</button>
+                        <button class="btn-del"  onclick="openDelete(${s.enrollment_id})">Unenroll</button>
                     </div>
                 </td>
+
             `;
             tableBody.appendChild(tr);
         });
@@ -277,40 +278,79 @@ function esc(str) {
 async function fetchData() {
     try {
         const token = localStorage.getItem('access') || localStorage.getItem('access_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+        const headers = { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
 
-        // 1. Fetch instructor courses
-        const coursesRes = await fetch('https://truemind.onrender.com/api/v1/courses/my-courses/', { headers });
-        if (!coursesRes.ok) return;
-        const coursesData = await coursesRes.json();
-        const courseList = coursesData.results || coursesData;
-        
-        let allStudents = [];
-        
-        // 2. Fetch students performance for each course
-        for (const course of courseList) {
-            const perfRes = await fetch(`https://truemind.onrender.com/api/v1/courses/${course.id}/student-performance/`, { headers });
-            if (perfRes.ok) {
-                const perfData = await perfRes.json();
-                const studentList = perfData.students || [];
-                studentList.forEach(s => {
-                    allStudents.push({
-                        id: s.student_id,
-                        name: s.full_name || s.email.split('@')[0],
-                        email: s.email,
-                        course: course.title,
-                        progress: Math.round(s.progress_percentage) || 0,
-                        status: s.is_completed ? 'Inactive' : 'Active' 
-                    });
-                });
-            }
+        const response = await fetch('https://truemind.onrender.com/api/v1/courses/my-students/', { headers });
+        if (!response.ok) {
+            const err = await response.json();
+            console.error('Failed to fetch students:', err);
+            return;
         }
         
-        students = allStudents;
+        const data = await response.json();
+        const results = data.results || data;
+        
+        students = results.map(s => ({
+            id: s.student_id,
+            enrollment_id: s.enrollment_id,
+            course_id: s.course_id,
+            name: s.full_name || s.username || 'N/A',
+            email: s.email,
+            course: s.course_title,
+            progress: Math.round(s.progress_percentage),
+            status: s.status
+        }));
+        
         render();
     } catch (err) {
         console.error('Failed to fetch students:', err);
     }
 }
 
+// ── Modal: Delete / Unenroll ──
+window.openDelete = function(enrollmentId) {
+    deletingId = enrollmentId; // Store enrollment_id for easier lookups
+    const s = students.find(s => s.enrollment_id === enrollmentId);
+    document.getElementById('deleteName').textContent = s ? `${s.name} from ${s.course}` : '';
+    openModal(deleteOverlay);
+};
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    const s = students.find(s => s.enrollment_id === deletingId);
+    if (!s) return;
+
+    try {
+        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+        const response = await fetch(`https://truemind.onrender.com/api/v1/courses/${s.course_id}/unenroll-student/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ student_id: s.id })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            alert(err.detail || 'Failed to unenroll student');
+            return;
+        }
+
+        alert('Student successfully unenrolled from the course.');
+        closeModal(deleteOverlay);
+        fetchData(); // Refresh the list
+    } catch (err) {
+        console.error('Unenroll error:', err);
+        alert('An error occurred.');
+    }
+});
+
 fetchData();
+
