@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f5f5f5;
+            margin:0;
+            padding:30px;
+        }
+
+        .profile-container{
+            max-width:700px;
+            margin:auto;
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .profile-header{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .profile-header img{
+            width:120px;
+            height:120px;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid #ddd;
+        }
+
+        h2,h3{
+            margin:10px 0;
+        }
+
+        p{
+            margin:8px 0;
+        }
+
+        .logout-btn{
+            margin-top:20px;
+            padding:10px 20px;
+            border:none;
+            background:red;
+            color:white;
+            border-radius:5px;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+
+    <div class="profile-header">
+        <img id="avatar" src="https://via.placeholder.com/120" alt="Avatar">
+        <h2 id="full_name">Loading...</h2>
+        <p id="role"></p>
+    </div>
+
+    <div>
+        <h3>Account Info</h3>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Username:</strong> <span id="username"></span></p>
+        <p><strong>Email Verified:</strong> <span id="verified"></span></p>
+        <p><strong>Joined:</strong> <span id="created_at"></span></p>
+    </div>
+
+    <div>
+        <h3>Profile Info</h3>
+        <p><strong>Bio:</strong> <span id="bio"></span></p>
+        <p><strong>Phone:</strong> <span id="phone"></span></p>
+        <p><strong>Website:</strong> <span id="website"></span></p>
+        <p><strong>LinkedIn:</strong> <span id="linkedin"></span></p>
+        <p><strong>GitHub:</strong> <span id="github"></span></p>
+        <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+</div>
+
+
+<script>
+
+    // Check Authentication
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+        window.location.href = "login.html";
+    }
+
+
+    // Fetch Profile Data
+    axios.get("https://truemind.onrender.com/api/v1/users/me/", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    .then(response => {
+
+        const user = response.data;
+
+        document.getElementById("avatar").src =
+            user.profile.avatar || "https://via.placeholder.com/120";
+
+        document.getElementById("full_name").textContent =
+            user.full_name;
+
+        document.getElementById("role").textContent =
+            user.role.toUpperCase();
+
+        document.getElementById("email").textContent =
+            user.email;
+
+        document.getElementById("username").textContent =
+            user.username;
+
+        document.getElementById("verified").textContent =
+            user.is_email_verified ? "Yes" : "No";
+
+        document.getElementById("created_at").textContent =
+            new Date(user.created_at).toLocaleDateString();
+
+        document.getElementById("bio").textContent =
+            user.profile.bio || "N/A";
+
+        document.getElementById("phone").textContent =
+            user.profile.phone_number || "N/A";
+
+        document.getElementById("website").innerHTML =
+            user.profile.website
+            ? `<a href="${user.profile.website}" target="_blank">${user.profile.website}</a>`
+            : "N/A";
+
+        document.getElementById("linkedin").innerHTML =
+            user.profile.linkedin_url
+            ? `<a href="${user.profile.linkedin_url}" target="_blank">${user.profile.linkedin_url}</a>`
+            : "N/A";
+
+        document.getElementById("github").innerHTML =
+            user.profile.github_url
+            ? `<a href="${user.profile.github_url}" target="_blank">${user.profile.github_url}</a>`
+            : "N/A";
+
+        document.getElementById("dob").textContent =
+            user.profile.date_of_birth || "N/A";
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Failed to load profile.");
+
+        localStorage.removeItem("access_token");
+
+        localStorage.removeItem("refresh_token");
+
+        window.location.href = "login.html";
+
+    });
+
+
+    // Logout Function
+    function logout() {
+
+        localStorage.removeItem("access_token");
+
+        localStorage.removeItem("refresh_token");
+
+        window.location.href = "login.html";
+
+    }
+
+</script>
+
+</body>
+</html>

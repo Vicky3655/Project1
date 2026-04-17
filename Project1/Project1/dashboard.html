@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>Talent Flow</title>
+</head>
+<body>
+    <div class=" welcome-container">
+        <div class="image"><img src="4807.jpg" alt="Welcome Image" class="welcome-image"></div>
+        <div class="welcome">
+            <div class="welcome-text">
+                <h1>Welcome to Talent Flow!</h1>
+                <p>Create Your Account</p>
+                <form>
+                        <label for="name" class="name">Name</label><br>
+                        <input type="name" id="Name" name="Name" placeholder="Enter your name"><br><br>
+                        <label for="Email" class="email">Email</label><br>
+                        <input type="email" id="Email" name="Email" placeholder="Username @gmail.com"><br><br>
+                        <label for="password" class="email">Password</label><br>
+                        <input type="password" id="password" name="password" placeholder="Enter your password"><br><br>
+                        <label for="role-select">Choose a role:</label><br>
+                        <select name="gender" id="gender-select">
+                        <option value="">--Please choose an option--</option>
+                        <option value="Instructor">Insturctor</option>
+                        <option value="Student">Student</option>
+                        <option value="other">Other</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </form>
+                    <div>
+                        <h2 class="reset"><a href = dashboard.html>Reset</a></h2>
+                    </div>
+                    <button type="submit" class="sign" href="account.html">Create Account</button>
+                    <p>Already have an account?  <span><a href="Login.html">Login</a></span></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

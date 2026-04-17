@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Flow Register</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+    <div class="welcome-container">
+
+        <div class="image">
+            <img src="4807.jpg" alt="Welcome Image" class="welcome-image">
+        </div>
+
+        <div class="welcome">
+            <div class="welcome-text">
+
+                <h1>Welcome to Talent Flow!</h1>
+                <p>Create Your Account</p>
+
+                <form id="registerForm">
+
+                    <label for="Name">Name</label><br>
+                    <input type="text" id="Name" placeholder="Enter your name"><br><br>
+
+                    <label for="Email">Email</label><br>
+                    <input type="email" id="Email" placeholder="Username@gmail.com"><br><br>
+
+                    <label for="password">Password</label><br>
+                    <input type="password" id="password" placeholder="Enter your password"><br><br>
+
+                    <label for="role-select">Choose a role:</label><br>
+                    <select id="role-select">
+                        <option value="">--Please choose an option--</option>
+                        <option value="instructor">Instructor</option>
+                        <option value="student">Student</option>
+                    </select><br><br>
+
+                    <button type="button" class="sign" onclick="Register()">
+                        Create Account
+                    </button>
+
+                </form>
+
+                <p>
+                    Already have an account?
+                    <span><a href="login.html">Login</a></span>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        function Register() {
+
+            const name = document.getElementById('Name').value.trim();
+            const email = document.getElementById('Email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role-select').value;
+            const btn = document.querySelector('.sign');
+
+            // Basic Validation
+            if (!name || !email || !password || !role) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            const url = 'https://truemind.onrender.com/api/v1/auth/register/';
+            
+            // To ensure unique usernames, append random digits if needed or rely on lowercasing.
+            const safeUsername = name.split(' ')[0].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
+
+            btn.textContent = "Creating Account...";
+            btn.disabled = true;
+
+            axios.post(url, {
+                username: safeUsername,
+                email: email,
+                first_name: name.split(' ')[0] || '',
+                last_name: name.split(' ')[1] || '',
+                password: password,
+                confirm_password: password,
+                role: role
+            })
+            .then(response => {
+                alert("Registration Successful!");
+                window.location.href = 'login.html';
+            })
+            .catch(error => {
+                btn.textContent = "Create Account";
+                btn.disabled = false;
+                
+                if (error.response && error.response.data) {
+                    let errStr = '';
+                    for (const [k, v] of Object.entries(error.response.data)) {
+                        errStr += `${k}: ${v}\n`;
+                    }
+                    alert("Registration Failed:\n" + errStr);
+                } else {
+                    alert("Something went wrong. Please check your connection.");
+                }
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

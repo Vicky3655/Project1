@@ -1,40 +1,12 @@
 // ── DATA ──
-let courses = [];
-
-function getAccessToken() {
-    return localStorage.getItem('access') || localStorage.getItem('access_token');
-}
-
-async function fetchCourses() {
-    try {
-        const token = getAccessToken();
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const response = await fetch('https://truemind.onrender.com/api/v1/courses/', { headers });
-        if (!response.ok) throw new Error('Failed to fetch courses');
-        
-        const data = await response.json();
-        const apiCourses = data.results || data;
-        
-        courses = apiCourses.map(c => {
-            let thumbUrl = c.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80';
-            if (thumbUrl.startsWith('/')) {
-                thumbUrl = 'https://truemind.onrender.com' + thumbUrl;
-            }
-            return {
-                id: c.id,
-                title: c.title,
-                status: c.status || 'published',
-                lessons: c.duration_hours || 0,
-                thumb: thumbUrl,
-                alt: c.title.split(' ')[0],
-                is_enrolled: c.is_enrolled || false
-            };
-        });
-        renderCourses();
-    } catch (error) {
-        console.error('Error fetching courses:', error);
-    }
-}
+const courses = [
+    { title: 'Introduction to Product Design', status: 'published', lessons: 10, thumb: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80', alt: 'Product Design' },
+    { title: 'UI/UX Design Fundamentals', status: 'published', lessons: 12, thumb: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&q=80', alt: 'UI/UX Design' },
+    { title: 'Frontend Development for Designers', status: 'draft', lessons: 9, thumb: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80', alt: 'Frontend Dev' },
+    { title: 'Data Analysis with Python & SQL', status: 'published', lessons: 9, thumb: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80', alt: 'Data Analysis' },
+    { title: 'Introduction to Backend Development', status: 'draft', lessons: 11, thumb: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&q=80', alt: 'Backend Dev' },
+    { title: 'Cloud Computing & AWS', status: 'published', lessons: 20, thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80', alt: 'Cloud Computing' }
+];
 
 let currentFilter = 'all';
 let currentSearch = '';
@@ -47,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSort();
     initAddModal();
     initMobileMenu();
-    fetchCourses();
+    renderCourses();
 });
 
 // ── FILTER ──
@@ -109,48 +81,11 @@ function renderCourses() {
                     <span>${capitalize(c.status)} • ${c.lessons} Lessons</span>
                 </div>
             </div>
-            <button class="arrow-btn" onclick="enrollCourse(${c.id}, ${c.is_enrolled})" title="${c.is_enrolled ? 'Already Enrolled' : 'Enroll in Course'}">
-                ${c.is_enrolled ? 
-                '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="green"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' : 
-                '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>'}
+            <button class="arrow-btn" onclick="editCourse('${c.title}')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
             </button>
         </div>
     `).join('');
-}
-
-async function enrollCourse(courseId, isEnrolled) {
-    if (isEnrolled) {
-        alert('You are already enrolled in this course!');
-        return;
-    }
-
-    try {
-        const token = getAccessToken();
-        if (!token) {
-            alert('Please login to enroll!');
-            return;
-        }
-
-        const response = await fetch(`https://truemind.onrender.com/api/v1/courses/${courseId}/enroll/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            const errData = await response.json();
-            alert(errData.detail || 'Failed to enroll');
-            return;
-        }
-
-        alert('Successfully enrolled!');
-        fetchCourses(); // refresh the list to update enrollment status
-    } catch (error) {
-        console.error('Enrollment error:', error);
-        alert('An error occurred during enrollment.');
-    }
 }
 
 function capitalize(str) {
@@ -186,6 +121,10 @@ function initAddModal() {
         modal.classList.remove('open');
         form.reset();
     });
+}
+
+function editCourse(title) {
+    alert(`Edit course: ${title}\n(Implement edit logic in next iteration)`);
 }
 
 // ── MOBILE MENU ──

@@ -1,7 +1,17 @@
 // ── Data ──
-let students = []; // Data will be fetched via API
+let students = [
+    { id: 1, name: 'Favour Ikekhuamen',  email: 'ikekhuamenfavour@gmail.com',    course: 'Introduction to Product Design',    progress: 75, status: 'Active'   },
+    { id: 2, name: 'Adedayo Ibrahim',    email: 'iadedayo01@gmail.com',           course: 'Frontend Development',              progress: 20, status: 'Inactive' },
+    { id: 3, name: 'Jeremiah Omoyeni',   email: 'jeremiahomoyeni02@gmail.com',    course: 'Cloud Computing & AWS',             progress: 60, status: 'Active'   },
+    { id: 4, name: 'Chioma Nwosu',       email: 'chiomanwosu@gmail.com',          course: 'UI/UX Design Fundamentals',         progress: 88, status: 'Active'   },
+    { id: 5, name: 'Emeka Okafor',       email: 'emekaokafor@gmail.com',          course: 'Data Analysis with Python & SQL',   progress: 45, status: 'Inactive' },
+    { id: 6, name: 'Blessing Eze',       email: 'blessingeze@gmail.com',          course: 'Introduction to Backend Development', progress: 33, status: 'Active' },
+    { id: 7, name: 'Tunde Adesanya',     email: 'tundeadesanya@gmail.com',        course: 'Introduction to Product Design',    progress: 92, status: 'Active'   },
+    { id: 8, name: 'Ngozi Obi',          email: 'ngoziobi@gmail.com',             course: 'Frontend Development',              progress: 55, status: 'Inactive' },
+];
+
 // ── State ──
-let nextId        = 1;
+let nextId        = 9;
 let currentFilter = 'all';
 let searchQuery   = '';
 let sortKey       = '';
@@ -274,43 +284,4 @@ function esc(str) {
 }
 
 // ── Init ──
-async function fetchData() {
-    try {
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-
-        // 1. Fetch instructor courses
-        const coursesRes = await fetch('https://truemind.onrender.com/api/v1/courses/my-courses/', { headers });
-        if (!coursesRes.ok) return;
-        const coursesData = await coursesRes.json();
-        const courseList = coursesData.results || coursesData;
-        
-        let allStudents = [];
-        
-        // 2. Fetch students performance for each course
-        for (const course of courseList) {
-            const perfRes = await fetch(`https://truemind.onrender.com/api/v1/courses/${course.id}/student-performance/`, { headers });
-            if (perfRes.ok) {
-                const perfData = await perfRes.json();
-                const studentList = perfData.students || [];
-                studentList.forEach(s => {
-                    allStudents.push({
-                        id: s.student_id,
-                        name: s.full_name || s.email.split('@')[0],
-                        email: s.email,
-                        course: course.title,
-                        progress: Math.round(s.progress_percentage) || 0,
-                        status: s.is_completed ? 'Inactive' : 'Active' 
-                    });
-                });
-            }
-        }
-        
-        students = allStudents;
-        render();
-    } catch (err) {
-        console.error('Failed to fetch students:', err);
-    }
-}
-
-fetchData();
+render();

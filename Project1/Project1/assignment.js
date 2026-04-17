@@ -1,46 +1,21 @@
 // ── DATA ──
-let courses = []; // To be fetched
-let assignments = [];
+const courses = [
+    'Introduction to Product Design',
+    'UI/UX Design Fundamentals',
+    'Frontend Development for Designers',
+    'Data Analysis with Python & SQL',
+    'Introduction to Backend Development',
+    'Cloud Computing & AWS'
+];
+
+let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
 let currentFilter = 'all';
 let currentSearch = '';
 let sortField = 'title';
 let isSortAsc = true;
 
-function getAccessToken() {
-    return localStorage.getItem('access_token') || localStorage.getItem('access');
-}
-
-async function fetchCourses() {
-    try {
-        const token = getAccessToken();
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch('https://truemind.onrender.com/api/v1/courses/my-courses/', { headers });
-        if(res.ok) {
-            const data = await res.json();
-            courses = data.results || data;
-            populateCourseDropdown();
-        }
-    } catch(e) { console.error(e); }
-}
-
-async function fetchAssignments() {
-    try {
-        const token = getAccessToken();
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch('https://truemind.onrender.com/api/v1/assignments/my-assignments/', { headers });
-        if (res.ok) {
-            const data = await res.json();
-            const apiData = data.results || data;
-            assignments = apiData.map(a => ({
-                id: a.id,
-                title: a.title,
-                course: a.course?.title || a.course,
-                dueDate: a.due_date || new Date().toISOString(),
-                status: new Date(a.due_date) < new Date() ? 'returned' : 'active' // just mocking status based on date
-            }));
-            renderAssignments();
-        }
-    } catch (e) { console.error(e); }
+function saveAssignments() {
+    localStorage.setItem('assignments', JSON.stringify(assignments));
 }
 
 // ── INIT ──
@@ -50,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initSort();
     initAddModal();
     initMobileMenu();
-    fetchCourses();
-    fetchAssignments();
+    renderAssignments();
+    populateCourseDropdown();
 });
 
 // ── FILTER ──
@@ -125,9 +100,10 @@ function renderAssignments() {
             <td><strong>${a.title}</strong></td>
             <td>${a.course}</td>
             <td>${formatDate(a.dueDate)}</td>
-            <td><span class="status-badge ${a.status.toLowerCase()}">${capitalize(a.status)}</span></td>
+            <td><span class="status-badge ${a.status}">${capitalize(a.status)}</span></td>
             <td class="actions">
-                <button class="action-btn delete" onclick="deleteAssignment(${a.id}, '${a.title}')">Delete</button>
+                <button class="action-btn edit" onclick="editAssignment('${a.title}')">Edit</button>
+                <button class="action-btn delete" onclick="deleteAssignment('${a.title}')">Delete</button>
             </td>
         </tr>
     `).join('');
@@ -159,57 +135,32 @@ function initAddModal() {
     cancelBtn.addEventListener('click', () => modal.classList.remove('open'));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         const fd = new FormData(form);
-        const token = getAccessToken();
-        try {
-            const res = await fetch('https://truemind.onrender.com/api/v1/assignments/', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: fd.get('title'),
-                    course_id: fd.get('course'), // Should be the course PK
-                    due_date: fd.get('dueDate'),
-                    description: "No Description",
-                    max_score: 100
-                })
-            });
-            if (!res.ok) {
-                const err = await res.json();
-                alert(JSON.stringify(err));
-                return;
-            }
-            fetchAssignments();
-            modal.classList.remove('open');
-            form.reset();
-        } catch (err) {
-            console.error(err);
-        }
+        const newAssignment = {
+            title: fd.get('title'),
+            course: fd.get('course'),
+            dueDate: fd.get('dueDate'),
+            status: fd.get('status')
+        };
+        assignments.push(newAssignment);
+        saveAssignments();
+        renderAssignments();
+        modal.classList.remove('open');
+        form.reset();
     });
 }
 
-function editAssignment(id) {
-    alert(`Edit assignment: ${id}\n(Implement edit logic in next iteration)`);
+function editAssignment(title) {
+    alert(`Edit assignment: ${title}\n(Implement edit logic in next iteration)`);
 }
 
-async function deleteAssignment(id, title) {
+function deleteAssignment(title) {
     if (confirm(`Delete "${title}"?`)) {
-        const token = getAccessToken();
-        try {
-            const res = await fetch(`https://truemind.onrender.com/api/v1/assignments/${id}/`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                fetchAssignments();
-            } else {
-                alert('Failed to delete assignment');
-            }
-        } catch (e) { console.error(e); }
+        assignments = assignments.filter(a => a.title !== title);
+        saveAssignments();
+        renderAssignments();
     }
 }
 
@@ -217,11 +168,10 @@ async function deleteAssignment(id, title) {
 function populateCourseDropdown() {
     const select = document.querySelector('select[name="course"]');
     if (!select) return;
-    select.innerHTML = '';
     courses.forEach(c => {
         const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.title;
+        opt.value = c;
+        opt.textContent = c;
         select.appendChild(opt);
     });
 }

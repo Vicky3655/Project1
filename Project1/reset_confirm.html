@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset Password</title>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.box{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    width:400px;
+}
+input,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+}
+button{
+    background:green;
+    color:white;
+    border:none;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+    <h2>Reset Password</h2>
+
+    <input type="text" id="token" hidden>
+
+    <input type="password" id="new_password" placeholder="Enter New Password">
+
+    <input type="password" id="confirm_password" placeholder="Confirm New Password">
+
+    <button onclick="resetPassword()">Reset Password</button>
+
+</div>
+
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const token = params.get("token");
+document.getElementById("token").value = token;
+
+function resetPassword(){
+
+    const token = document.getElementById("token").value;
+
+    const new_password = document.getElementById("new_password").value;
+
+    const confirm_password = document.getElementById("confirm_password").value;
+
+
+    if(!token || !new_password || !confirm_password){
+
+        alert("Please fill all fields.");
+
+        return;
+
+    }
+
+
+    if(new_password !== confirm_password){
+
+        alert("Passwords do not match.");
+
+        return;
+
+    }
+
+
+    axios.post(
+        "https://truemind.onrender.com/api/v1/auth/password-reset/confirm/",
+        {
+            token: token,
+            new_password: new_password,
+            confirm_password: confirm_password
+        }
+    )
+
+    .then(response=>{
+
+        alert("Password reset successful!");
+
+        window.location.href = "login.html";
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert(
+            error.response?.data?.token ||
+            error.response?.data?.confirm_password ||
+            "Password reset failed."
+        );
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

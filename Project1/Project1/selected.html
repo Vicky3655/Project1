@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main1.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="selected.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Talent Flow</title>
 </head>
 
@@ -21,13 +19,13 @@
         </div>
         <div class="list">
             <ul>
-                <a href="index.html" id="student_name"></a>
+                <a href="index.html">Student</a>
                 <a href="about.html"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
                       </svg>
                 </a>
                 
-                <a href="profile.html"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <a href="services.html"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                        </svg>
                 </a>
@@ -61,31 +59,10 @@
     </div>
 
     <section class="content">
-        <h1>Choose a Path</h1>
-        <form>
-            <label for="path-select">Search for a Course:</label><br>
-            <select name="path" id="path-select">
-                <option value="">--Please choose an option--</option>
-                <option value="web-development">Web Development</option>
-                <option value="data-science">Data Science</option>
-                <option value="cyber-security">Cyber Security</option>
-                <option value="cloud-computing">Cloud Computing</option>
-            </select><br><br>
-            <a href="selected.html"><button type="button" class="select-btn">Select Path</button></a>
-        </form>
+        <h1>Choose your strength</h1>
+            <a href="courses.html"><button type="button" class="select-btn">Beginner</button></a>
+            <a href="courses.html"><button type="button" class="select-btn">Intermediate</button></a>
+            <a href="courses.html"><button type="button" class="select-btn">Advanced</button></a>
     </section>
-<script>
-    const token = localStorage.getItem("access_token");
-     axios.get("https://truemind.onrender.com/api/v1/users/me/", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        const user = response.data;
-        document.getElementById("student_name").textContent = user.role.toUpperCase();
-    })
-</script>
 </body>
 </html>
-        

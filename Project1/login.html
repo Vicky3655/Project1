@@ -3,44 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Flow Login</title>
+
     <link rel="stylesheet" href="login.css">
-    <script src="script.js" defer></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <title>Talent Flow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div class=" welcome-container">
-        <div class="image"><img src="4420721.jpg" alt="Welcome Image" class="welcome-image"></div>
-        <div class="welcome">
-            <div class="welcome-text">
-                <h1>Welcome Back!</h1>
-                <form>
-                        <label for="Email" class="email"> Your Email</label><br>
-                        <input type="email" id="Email" name="Email" placeholder="Username @gmail.com"><br><br>
-                        <label for="password" class="email">Password</label><br>
-                        <input type="password" id="password" name="password" placeholder="Enter your password"><br><br>
-                    </form>
-                    <div>
-                        <h2 class="forgot"><a href = password.html>Forgot Password?</a></h2>
-                    </div>
-                    <button type="submit" class="log" href="Login.html">Login</button>
-                    <div class="dd">
-                    Instant Login</div>
-                    <div class="logs">
-                      <a href="facebook.com">
-                          <button type="submit" href="facebook.com"> <img src="icons8-facebook-48.png">Continue with Facebook</button>
-                      </a>
-                      <a href="google.com">
-                            <button type="submit"  href="google.com"> <img src="icons8-google-48.png">Continue with Google</button>
-                      </a>
-                    </div>
-                    <p>Don't have an account? <span><a href="dashboard.html">Register</a></span></p>
 
+<div class="welcome-container">
 
+    <div class="image">
+        <img src="4420721.jpg" alt="Welcome Image" class="welcome-image">
+    </div>
+
+    <div class="welcome">
+        <div class="welcome-text">
+
+            <h1>Welcome Back!</h1>
+
+            <div class="message" style="display:none;">
+                <p></p>
             </div>
+
+            <form>
+
+                <label for="Email">Your Email</label><br>
+                <input type="email" id="Email" placeholder="Enter your email"><br><br>
+
+                <label for="password">Password</label><br>
+                <input type="password" id="password" placeholder="Enter your password"><br><br>
+
+            </form>
+
+            <div>
+                <h2 class="forgot">
+                    <a href="password.html">Forgot Password?</a>
+                </h2>
+            </div>
+
+            <button type="button" class="log" onclick="Login()">
+                Login
+            </button>
+            <div id="g_id_onload"
+                data-client_id="533715299770-qkfkkp88n8tjc2ittk1t6pju14hov61q.apps.googleusercontent.com"
+                data-callback="handleGoogleLogin">
+            </div>
+
+<div class="g_id_signin"></div>
+
+            <p>
+                Don't have an account?
+                <span><a href="dashboard.html">Register</a></span>
+            </p>
+
         </div>
     </div>
+
+</div>
+
+
+<script>
+
+function Login() {
+
+    const email = document.getElementById('Email').value.trim();
+    const password = document.getElementById('password').value;
+    const messageDiv = document.querySelector('.message');
+    const msgBlock = messageDiv.querySelector("p");
+    const logBtn = document.querySelector('.log');
+
+    const url = 'https://truemind.onrender.com/api/v1/auth/login/';
+
+    if (!email || !password) {
+        msgBlock.textContent = "Please enter both email and password.";
+        msgBlock.style.color = "red";
+        messageDiv.style.display = "block";
+        return;
+    }
+
+    logBtn.textContent = "Logging in...";
+    logBtn.disabled = true;
+
+    axios.post(url, {
+        email: email,
+        password: password
+    })
+    .then(response => {
+        // SAVE TOKENS
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        msgBlock.textContent = "Success! Redirecting...";
+        msgBlock.style.color = "green";
+        messageDiv.style.display = "block";
+        
+        setTimeout(() => {
+            window.location.href = "main1.html";
+        }, 800);
+    })
+    .catch(err => {
+        logBtn.textContent = "Login";
+        logBtn.disabled = false;
+        
+        let errorMsg = "Login failed";
+        if (err.response?.data?.detail) {
+            errorMsg = err.response.data.detail;
+        } else if (err.response?.data) {
+            errorMsg = "Check your email and password.";
+        }
+        
+        msgBlock.textContent = errorMsg;
+        msgBlock.style.color = "red";
+        messageDiv.style.display = "block";
+    });
+}
+
+function handleGoogleLogin(response) {
+
+    axios.post("https://truemind.onrender.com/api/v1/auth/google/", {
+        token: response.credential
+    })
+    .then(res => {
+
+        const data = res.data;
+
+        localStorage.setItem("access_token", data.tokens.access);
+        localStorage.setItem("refresh_token", data.tokens.refresh);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        window.location.href = "main1.html";
+    })
+    .catch(err => {
+        console.log("GOOGLE LOGIN ERROR:", err);
+        console.log(err.response?.data);
+
+        alert(
+            err.response?.data?.detail ||
+            "Google login failed"
+        );
+    });
+}
+
+</script>
+
 </body>
 </html>
