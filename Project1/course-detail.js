@@ -1,6 +1,11 @@
 // ── CONFIG ──
 const API_BASE = 'https://truemind.onrender.com/api/v1';
 
+// ── HELPERS ──
+function getAccessToken() {
+    return localStorage.getItem('access') || localStorage.getItem('access_token');
+}
+
 // ── STATE ──
 let courseId = null;
 let courseData = null;
@@ -39,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── FETCHING ──
 async function fetchCourseDetails() {
     try {
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+        const token = getAccessToken();
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
         const response = await fetch(`${API_BASE}/courses/${courseId}/`, { headers });
@@ -55,7 +60,7 @@ async function fetchCourseDetails() {
 
 async function fetchCurriculum() {
     try {
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+        const token = getAccessToken();
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
         const response = await fetch(`${API_BASE}/courses/${courseId}/curriculum/`, { headers });
@@ -212,10 +217,12 @@ window.toggleModule = function(trigger) {
 
 function initEnrollment() {
     const btn = document.getElementById('enroll-btn');
-    btn.addEventListener('click', async () => {
-        if (courseData.is_enrolled) return;
+    if (!btn) return;
 
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+    btn.addEventListener('click', async () => {
+        if (courseData && courseData.is_enrolled) return;
+
+        const token = getAccessToken();
         if (!token) {
             alert('Please login to enroll!');
             window.location.href = 'login.html';
@@ -235,20 +242,23 @@ function initEnrollment() {
             });
 
             if (response.ok) {
-                btn.textContent = 'Successfully Enrolled!';
+                btn.textContent = 'Enrolled!';
                 btn.style.background = '#10B981';
+                
+                // Show a brief success message and redirect to dashboard or reload
                 setTimeout(() => {
-                    location.reload();
-                }, 1500);
+                    alert('Successfully enrolled! View your course in the Dashboard.');
+                    window.location.href = 'dashboard.html';
+                }, 1000);
             } else {
                 const err = await response.json();
-                alert(err.detail || 'Enrollment failed.');
+                alert(err.detail || 'Enrollment failed. Please try again.');
                 btn.disabled = false;
                 btn.textContent = 'Enroll Now';
             }
         } catch (error) {
             console.error(error);
-            alert('An error occurred. Please try again.');
+            alert('An error occurred during enrollment.');
             btn.disabled = false;
             btn.textContent = 'Enroll Now';
         }
