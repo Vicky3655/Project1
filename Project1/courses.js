@@ -143,7 +143,7 @@ function renderCourses() {
         const diffColor = c.difficulty === 'beginner' ? '#22C55E' : (c.difficulty === 'advanced' ? '#EF4444' : '#F59E0B');
         
         return `
-        <div class="course-card" style="animation-delay: ${i * 80}ms">
+        <div class="course-card" style="animation-delay: ${i * 80}ms" onclick="window.location.href='course-detail.html?id=${c.id}'">
             <div class="course-thumb">
                 <img src="${c.thumb}" alt="${c.title}">
             </div>
@@ -159,15 +159,15 @@ function renderCourses() {
             </div>
             ${(userRole === 'instructor' || userRole === 'admin') ? `
                 <div style="position:absolute; bottom:14px; right:14px; display:flex; gap:8px;">
-                    <button class="edit-btn-sm" onclick="openEdit(${c.id})" style="background:#F1F5F9; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#475569;">
+                    <button class="edit-btn-sm" onclick="event.stopPropagation(); openEdit(${c.id})" style="background:#F1F5F9; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#475569;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                 </div>
             ` : `
-                <button class="arrow-btn" onclick="enrollCourse(${c.id}, ${c.is_enrolled})" title="${c.is_enrolled ? 'Already Enrolled' : 'Enroll in Course'}">
-                    ${c.is_enrolled ? 
-                    '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="green"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' : 
-                    '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>'}
+                <button class="arrow-btn" title="View Details">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
                 </button>
             `}
         </div>
