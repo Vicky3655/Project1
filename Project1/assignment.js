@@ -96,20 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── ROLE-BASED UI ──
 function applyRoleUI() {
-    // Hide instructor-only elements from students
     if (isStudent()) {
-        // Hide the Add Assignment button
-        document.querySelectorAll('.add-btn').forEach(b => b.style.display = 'none');
-        // Update empty state message
+        // Hide ALL assignment creation buttons (header + empty state)
+        document.querySelectorAll('.add-btn, .create-btn').forEach(b => b.style.display = 'none');
+        // Update empty state messaging for students
         const emptyTitle = document.querySelector('.empty-state h2');
-        const emptyDesc = document.querySelector('.empty-state p');
+        const emptyDesc  = document.querySelector('.empty-state p');
         if (emptyTitle) emptyTitle.textContent = 'No assignments yet';
-        if (emptyDesc) emptyDesc.textContent = 'Assignments from your enrolled courses will appear here.';
-        // Hide sidebar links that students shouldn't see
+        if (emptyDesc)  emptyDesc.textContent  = 'Assignments from your enrolled courses will appear here.';
+        // Hide instructor-only sidebar links
         document.querySelectorAll('a[href="students.html"], a[href="performance.html"]')
             .forEach(el => el.style.display = 'none');
     }
 }
+
 
 // ── FILTER ──
 function initFilters() {
