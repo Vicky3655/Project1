@@ -77,17 +77,31 @@ nav {
     margin-bottom: 24px;
 }
 
+/* Tooltip */
 .sidebar-link::after {
     content: attr(data-tip);
-    position: absolute; left: 58px;
-    background: #1E293B; color: white;
-    font-size: 12px; padding: 4px 10px;
-    border-radius: 6px; white-space: nowrap;
-    pointer-events: none; opacity: 0;
-    transition: opacity 0.2s; z-index: 200;
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-10px);
+    background-color: #0F172A;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-link:hover::after { opacity: 1; }
+.sidebar-link:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
 
 /* ── MAIN CONTENT ── */
 .content {
