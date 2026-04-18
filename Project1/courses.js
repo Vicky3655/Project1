@@ -15,12 +15,24 @@ async function fetchCourses() {
     try {
         const token = getAccessToken();
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const response = await fetch('https://truemind.onrender.com/api/v1/courses/', { headers });
+
+        // Instructors only see their own courses; students see all published ones
+        let url;
+        if (userRole === 'instructor' || userRole === 'admin') {
+            url = 'https://truemind.onrender.com/api/v1/courses/my-courses/';
+        } else {
+            url = 'https://truemind.onrender.com/api/v1/courses/';
+            if (currentDifficulty && currentDifficulty !== 'all') {
+                url += `?difficulty=${currentDifficulty}`;
+            }
+        }
+
+        const response = await fetch(url, { headers });
         if (!response.ok) throw new Error('Failed to fetch courses');
-        
+
         const data = await response.json();
         const apiCourses = data.results || data;
-        
+
         courses = apiCourses.map(c => {
             let thumbUrl = c.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80';
             if (thumbUrl.startsWith('/')) {
@@ -42,6 +54,7 @@ async function fetchCourses() {
         console.error('Error fetching courses:', error);
     }
 }
+
 
 let currentFilter = 'all';
 let currentSearch = '';
