@@ -46,7 +46,8 @@ async function fetchCourses() {
                 difficulty: c.difficulty || 'beginner',
                 lessons: c.duration_hours || 0,
                 thumb: thumbUrl,
-                is_enrolled: c.is_enrolled || false
+                is_enrolled: c.is_enrolled || false,
+                instructor_id: c.instructor?.id || c.instructor
             };
         });
         renderCourses();
@@ -138,12 +139,18 @@ function renderCourses() {
         return isSortedAsc ? cmp : -cmp;
     });
 
+    const user = getUser();
+    const currentUserId = user ? user.id : null;
+
     grid.innerHTML = filtered.map((c, i) => {
         const diffLabel = capitalize(c.difficulty);
         const diffColor = c.difficulty === 'beginner' ? '#22C55E' : (c.difficulty === 'advanced' ? '#EF4444' : '#F59E0B');
         
+        const isOwner = currentUserId && (c.instructor_id === currentUserId || userRole === 'admin');
+        const detailUrl = isOwner ? `instructor-course-detail.html?id=${c.id}` : `course-detail.html?id=${c.id}`;
+
         return `
-        <div class="course-card" style="animation-delay: ${i * 80}ms" onclick="window.location.href='course-detail.html?id=${c.id}'">
+        <div class="course-card" style="animation-delay: ${i * 80}ms" onclick="window.location.href='${detailUrl}'">
             <div class="course-thumb">
                 <img src="${c.thumb}" alt="${c.title}">
             </div>
