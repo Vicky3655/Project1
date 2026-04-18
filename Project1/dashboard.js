@@ -6,18 +6,19 @@
 
 const API = 'https://truemind.onrender.com/api/v1';
 
-function getToken() {
+function getAccessToken() {
     return localStorage.getItem('access') || localStorage.getItem('access_token');
 }
 
 function authHeaders(extra = {}) {
-    return { 'Authorization': `Bearer ${getToken()}`, ...extra };
+    return { 'Authorization': `Bearer ${getAccessToken()}`, ...extra };
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Initial State
     const userStr = localStorage.getItem('user');
-    if (!userStr || !getToken()) {
+    const token = getAccessToken();
+    if (!userStr || !token) {
         window.location.href = 'login.html';
         return;
     }
@@ -25,14 +26,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(userStr);
     renderGreeting(user);
     
-    // 2. Fetch all data in parallel
+    // 2. Fetch all data in parallel for efficiency
     try {
-        const [coursesRes, assignmentsRes, profileRes] = await Promise.all([
-            fetch(`${API}/courses/`, { headers: authHeaders() }).catch(e => null),
+        const [progressRes, assignmentsRes, submissionsRes, profileRes, notificationsRes] = await Promise.all([
+            fetch(`${API}/progress/`, { headers: authHeaders() }).catch(e => null),
             fetch(`${API}/assignments/`, { headers: authHeaders() }).catch(e => null),
-            fetch(`${API}/users/me/profile/`, { headers: authHeaders() }).catch(e => null)
+            fetch(`${API}/assignments/submissions/my-submissions/`, { headers: authHeaders() }).catch(e => null),
+            fetch(`${API}/users/me/profile/`, { headers: authHeaders() }).catch(e => null),
+            fetch(`${API}/notifications/`, { headers: authHeaders() }).catch(e => null)
         ]);
 
+        // Profile Handling
         if (profileRes && profileRes.ok) {
             const profile = await profileRes.json();
             if (profile.avatar) {
@@ -43,26 +47,57 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        let courses = [];
-        if (coursesRes && coursesRes.ok) {
-            const data = await coursesRes.json();
-            courses = data.results || data;
+        // Progress Handling (Our primary source for enrolled courses)
+        let progressReport = [];
+        if (progressRes && progressRes.ok) {
+            const data = await progressRes.json();
+            progressReport = data.results || data;
         }
 
+        // Assignments Handling
         let assignments = [];
         if (assignmentsRes && assignmentsRes.ok) {
             const data = await assignmentsRes.json();
             assignments = data.results || data;
         }
 
-        // 3. Process & Render
-        const enrolledCourses = courses.filter(c => c.is_enrolled);
-        const pendingAssignments = assignments.filter(a => !a.is_submitted); // Assuming is_submitted flag
+        // Submissions Handling
+        let submissions = [];
+        if (submissionsRes && submissionsRes.ok) {
+            const data = await submissionsRes.json();
+            submissions = data.results || data;
+        }
 
-        renderStats(enrolledCourses, pendingAssignments);
-        renderEnrolledCourses(enrolledCourses);
+        // Notifications Handling
+        let notifications = [];
+        if (notificationsRes && notificationsRes.ok) {
+            const data = await notificationsRes.json();
+            notifications = data.results || data;
+        }
+
+        // 3. Process & Match Data
+        const submissionMap = new Map(submissions.map(s => [s.assignment, s]));
+        
+        const pendingAssignments = assignments.filter(a => !submissionMap.has(a.id));
+        const completedCourses = progressReport.filter(p => p.percentage >= 100);
+        
+        // Calculate average score
+        const gradedSubmissions = submissions.filter(s => s.score !== null);
+        const avgScore = gradedSubmissions.length > 0 
+            ? Math.round(gradedSubmissions.reduce((sum, s) => sum + (s.score_percentage || 0), 0) / gradedSubmissions.length)
+            : null;
+
+        // 4. Render
+        renderStats({
+            enrolledCount: progressReport.length,
+            completedCount: completedCourses.length,
+            pendingCount: pendingAssignments.length,
+            avgScore: avgScore
+        });
+
+        renderEnrolledCourses(progressReport);
         renderUpcomingAssignments(pendingAssignments);
-        renderRecentActivity(enrolledCourses, assignments);
+        renderRecentActivity(notifications);
 
     } catch (err) {
         console.error('Data fetch error:', err);
@@ -84,63 +119,49 @@ function renderGreeting(user) {
     }
 }
 
-function renderStats(enrolled, pending) {
+function renderStats(stats) {
     const statEnrolled = document.getElementById('statEnrolled');
     const statCompleted = document.getElementById('statCompleted');
     const statAssignments = document.getElementById('statAssignments');
     const statAvg = document.getElementById('statAvg');
-    const pendingCount = document.getElementById('pendingCount');
+    const pendingCountBadge = document.getElementById('pendingCount');
 
-    // Total Enrolled
-    if (statEnrolled) {
-        statEnrolled.textContent = enrolled.length;
-    }
-
-    // Completed Courses (if progress data is missing, we check progress field)
-    const completedCount = enrolled.filter(c => c.progress === 100 || c.completed).length;
-    if (statCompleted) {
-        statCompleted.textContent = completedCount;
-    }
-
-    // Pending Assignments
-    if (statAssignments) {
-        statAssignments.textContent = pending.length;
-    }
-    if (pendingCount) {
-        pendingCount.textContent = pending.length;
-    }
-
-    // Average Score (Placeholder until we have submission scores)
+    if (statEnrolled) statEnrolled.textContent = stats.enrolledCount;
+    if (statCompleted) statCompleted.textContent = stats.completedCount;
+    if (statAssignments) statAssignments.textContent = stats.pendingCount;
+    if (pendingCountBadge) pendingCountBadge.textContent = stats.pendingCount;
+    
     if (statAvg) {
-        statAvg.textContent = '—';
+        statAvg.textContent = stats.avgScore !== null ? `${stats.avgScore}%` : '—';
     }
 }
 
-function renderEnrolledCourses(courses) {
+function renderEnrolledCourses(progressReport) {
     const list = document.getElementById('courseList');
     const empty = document.getElementById('emptyCourses');
     if (!list) return;
 
     list.innerHTML = '';
     
-    if (courses.length === 0) {
+    if (progressReport.length === 0) {
         empty.style.display = 'flex';
         return;
     }
 
     empty.style.display = 'none';
 
-    // Show top 4 enrolled courses
-    courses.slice(0, 4).forEach(c => {
-        const row = document.createElement('div');
-        row.className = 'course-row';
-        const progress = c.progress || 0;
+    // Show top 4 enrolled courses by most recent (assuming order from API)
+    progressReport.slice(0, 4).forEach(p => {
+        const c = p.course;
+        const progress = Math.round(p.percentage || 0);
         const statusClass = progress >= 100 ? 'completed' : 'in-progress';
         const statusLabel = progress >= 100 ? 'Completed' : 'In Progress';
 
         let thumbUrl = c.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=100&q=70';
         if (thumbUrl.startsWith('/')) thumbUrl = 'https://truemind.onrender.com' + thumbUrl;
 
+        const row = document.createElement('div');
+        row.className = 'course-row';
         row.innerHTML = `
             <div class="course-thumb-sm">
                 <img src="${thumbUrl}" alt="${esc(c.title)}">
@@ -156,6 +177,8 @@ function renderEnrolledCourses(courses) {
             </div>
             <span class="course-badge ${statusClass}">${statusLabel}</span>
         `;
+        row.style.cursor = 'pointer';
+        row.onclick = () => window.location.href = `course-detail.html?id=${c.id}`;
         list.appendChild(row);
     });
 }
@@ -174,7 +197,10 @@ function renderUpcomingAssignments(assignments) {
 
     empty.style.display = 'none';
 
-    assignments.slice(0, 3).forEach(a => {
+    // Sort by due date (closest first)
+    const sorted = [...assignments].sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+
+    sorted.slice(0, 3).forEach(a => {
         const days = getDaysLeft(a.due_date);
         let chipClass = 'normal';
         let chipText = `Due in ${days} days`;
@@ -198,44 +224,46 @@ function renderUpcomingAssignments(assignments) {
             </div>
             <span class="due-chip ${chipClass}">${chipText}</span>
         `;
+        li.style.cursor = 'pointer';
+        li.onclick = () => window.location.href = 'assignment.html';
         list.appendChild(li);
     });
 }
 
-function renderRecentActivity(enrolledCourses, assignments) {
+function renderRecentActivity(notifications) {
     const list = document.getElementById('activityList');
     const empty = document.getElementById('emptyActivity');
     if (!list) return;
 
     list.innerHTML = '';
-    
-    // Simulate activity for now (Enrolled in X, Scored Y, etc.)
-    const activities = [];
 
-    enrolledCourses.slice(0, 2).forEach(c => {
-        activities.push({
-            type: 'enrolled',
-            text: `Enrolled in <em>${esc(c.title)}</em>`,
-            time: 'This week',
-            dot: 'purple'
-        });
-    });
-
-    if (activities.length === 0) {
+    if (notifications.length === 0) {
         empty.style.display = 'flex';
         return;
     }
 
     empty.style.display = 'none';
 
-    activities.forEach(act => {
+    // Show latest 5 notifications
+    notifications.slice(0, 5).forEach(n => {
+        const dotColors = {
+            'info': 'blue',
+            'success': 'green',
+            'warning': 'orange',
+            'error': 'red',
+            'new_assignment': 'purple',
+            'assignment_graded': 'green',
+            'course_completed': 'gold'
+        };
+        const dot = dotColors[n.notification_type] || 'blue';
+
         const li = document.createElement('li');
-        li.className = 'activity-item';
+        li.className = `activity-item ${n.is_read ? 'read' : 'unread'}`;
         li.innerHTML = `
-            <span class="activity-dot ${act.dot}"></span>
+            <span class="activity-dot ${dot}"></span>
             <div class="activity-body">
-                <p class="activity-text">${act.text}</p>
-                <p class="activity-time">${act.time}</p>
+                <p class="activity-text">${esc(n.title)}: ${esc(n.message)}</p>
+                <p class="activity-time">${formatTimestamp(n.created_at)}</p>
             </div>
         `;
         list.appendChild(li);
@@ -254,6 +282,21 @@ function getDaysLeft(dateStr) {
     if (!dateStr) return 0;
     const diff = new Date(dateStr) - new Date();
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+function formatTimestamp(ts) {
+    const date = new Date(ts);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    return date.toLocaleDateString();
 }
 
 function esc(str) {
