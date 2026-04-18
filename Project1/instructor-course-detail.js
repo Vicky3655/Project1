@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initModals();
     initForms();
+    initButtons();
     initLessonTypeSwitch();
 
     // Fetch initial data
@@ -436,6 +437,47 @@ function updateLessonTypeUI() {
     const type = document.getElementById('lesson-type-select').value;
     document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
     document.getElementById(`field-${type}`).style.display = 'block';
+}
+
+function initButtons() {
+    // Add Module Button
+    const addModuleBtn = document.querySelector('.add-module-btn');
+    if (addModuleBtn) {
+        addModuleBtn.addEventListener('click', () => openModuleModal());
+    }
+
+    // Preview Course Button
+    const previewBtn = document.getElementById('preview-btn');
+    if (previewBtn) {
+        previewBtn.addEventListener('click', () => {
+            window.location.href = `course-detail.html?id=${courseId}`;
+        });
+    }
+
+    // Delete Course Button
+    const deleteBtn = document.querySelector('.delete-course-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', deleteCourse);
+    }
+}
+
+async function deleteCourse() {
+    if (!confirm('Are you sure you want to PERMANENTLY delete this course? This action cannot be undone.')) return;
+    
+    const token = localStorage.getItem('access');
+    try {
+        const res = await fetch(`${API_BASE}/courses/${courseId}/`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            alert('Course deleted successfully.');
+            window.location.href = 'courses.html';
+        } else {
+            const err = await res.json();
+            alert(err.detail || 'Failed to delete course.');
+        }
+    } catch (e) { console.error(e); }
 }
 
 function esc(str) {
