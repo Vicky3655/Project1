@@ -171,3 +171,79 @@ p a {
         width: 100%;
     }
 }
+
+/* ─────────────────────────────────────────
+   ROLE SELECTION MODAL
+   ───────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.role-modal {
+    background: #FFFFFF;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.role-modal h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.role-modal p {
+    color: #64748B;
+    margin-bottom: 30px;
+    margin-top: 0;
+}
+
+.role-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.role-btn {
+    padding: 16px;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.role-btn:hover {
+    border-color: #2563EB;
+    background-color: #F8FAFC;
+}
+
+.role-btn.instructor:hover { color: #f59e0b; border-color: #f59e0b; }
+.role-btn.student:hover { color: #2563EB; border-color: #2563EB; }
+
+.role-btn svg {
+    width: 20px;
+    height: 20px;
+}

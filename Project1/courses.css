@@ -110,6 +110,11 @@ nav {
     color: #FFFFFF;
 }
 
+.logout-link {
+    margin-top: auto;
+    margin-bottom: 24px;
+}
+
 /* ── MAIN CONTENT ── */
 .content {
     margin-left: 68px;

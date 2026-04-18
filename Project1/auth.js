@@ -44,7 +44,7 @@
         if (!allowed.includes(role)) {
             // Redirect to the right home for this user's role
             if (role === 'student') {
-                window.location.href = 'selected.html';
+                window.location.href = 'dashboard.html';
             } else if (role === 'instructor' || role === 'admin') {
                 window.location.href = 'courses.html';
             } else {
@@ -82,4 +82,30 @@
     // 4. Expose user & role globally for other scripts on the page
     window.__currentUser = user;
     window.__currentRole = role;
+
+    // 5. Global Logout Function
+    window.logout = async function () {
+        const refresh = localStorage.getItem('refresh_token') || localStorage.getItem('refresh');
+        const access = localStorage.getItem('access_token') || localStorage.getItem('access');
+
+        if (refresh && access) {
+            try {
+                // Backend call to blacklist the token
+                await fetch('https://truemind.onrender.com/api/v1/auth/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${access}`
+                    },
+                    body: JSON.stringify({ refresh })
+                });
+            } catch (err) {
+                console.error('Core: Backend logout failed', err);
+            }
+        }
+
+        // Always clear local storage and redirect
+        localStorage.clear();
+        window.location.href = 'login.html';
+    };
 })();

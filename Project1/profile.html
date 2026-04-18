@@ -172,17 +172,7 @@
     });
 
 
-    // Logout Function
-    function logout() {
-
-        localStorage.removeItem("access_token");
-
-        localStorage.removeItem("refresh_token");
-
-        window.location.href = "login.html";
-
-    }
-
+    // Logout is handled by the global function in auth.js
 </script>
 
 </body>
