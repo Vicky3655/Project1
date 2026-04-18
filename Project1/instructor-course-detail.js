@@ -1,6 +1,11 @@
 // ── CONFIG ──
 const API_BASE = 'https://truemind.onrender.com/api/v1';
 
+// ── HELPERS ──
+function getAccessToken() {
+    return localStorage.getItem('access') || localStorage.getItem('access_token');
+}
+
 // ── STATE ──
 let courseId = null;
 let courseData = null;
@@ -33,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── DATA FETCHING ──
 async function fetchCourseDetails() {
     try {
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+        const token = getAccessToken();
         const res = await fetch(`${API_BASE}/courses/${courseId}/`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -50,7 +55,7 @@ async function fetchCourseDetails() {
 
 async function fetchCurriculum() {
     try {
-        const token = localStorage.getItem('access') || localStorage.getItem('access_token');
+        const token = getAccessToken();
         const res = await fetch(`${API_BASE}/courses/${courseId}/curriculum/`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -195,7 +200,7 @@ window.openModuleModal = function(id = null) {
 
 async function deleteModule(id) {
     if (!confirm('Delete this module and all its lessons?')) return;
-    const token = localStorage.getItem('access');
+    const token = getAccessToken();
     try {
         const res = await fetch(`${API_BASE}/lessons/modules/${id}/`, {
             method: 'DELETE',
@@ -237,7 +242,7 @@ window.openLessonModal = function(moduleId, lessonId = null) {
 
 async function deleteLesson(id) {
     if (!confirm('Delete this lesson?')) return;
-    const token = localStorage.getItem('access');
+    const token = getAccessToken();
     try {
         const res = await fetch(`${API_BASE}/lessons/${id}/`, {
             method: 'DELETE',
@@ -260,7 +265,7 @@ function initForms() {
             description: fd.get('description')
         };
         
-        const token = localStorage.getItem('access');
+        const token = getAccessToken();
         const url = id ? `${API_BASE}/lessons/modules/${id}/` : `${API_BASE}/lessons/modules/`;
         const method = id ? 'PATCH' : 'POST';
 
@@ -283,7 +288,7 @@ function initForms() {
         const form = e.target;
         const fd = new FormData(form);
         const id = fd.get('id');
-        const token = localStorage.getItem('access');
+        const token = getAccessToken();
         
         // Prepare FormData for multipart upload
         const formData = new FormData();
@@ -333,7 +338,7 @@ function initForms() {
         
         if (!confirm(`Are you sure you want to ${action} this course?`)) return;
 
-        const token = localStorage.getItem('access');
+        const token = getAccessToken();
         try {
             const res = await fetch(`${API_BASE}/courses/${courseId}/${action}/`, {
                 method: 'PATCH',
@@ -385,7 +390,7 @@ function uploadWithProgress(url, method, token, formData) {
 }
 
 async function saveCourseUpdate(payload) {
-    const token = localStorage.getItem('access');
+    const token = getAccessToken();
     try {
         const res = await fetch(`${API_BASE}/courses/${courseId}/`, {
             method: 'PATCH',
@@ -464,7 +469,7 @@ function initButtons() {
 async function deleteCourse() {
     if (!confirm('Are you sure you want to PERMANENTLY delete this course? This action cannot be undone.')) return;
     
-    const token = localStorage.getItem('access');
+    const token = getAccessToken();
     try {
         const res = await fetch(`${API_BASE}/courses/${courseId}/`, {
             method: 'DELETE',
