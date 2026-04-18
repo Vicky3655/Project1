@@ -142,20 +142,29 @@ function handleGoogleLogin(response) {
 
         const data = res.data;
 
+        // Store tokens and user — same keys as regular login
         localStorage.setItem("access_token", data.tokens.access);
         localStorage.setItem("refresh_token", data.tokens.refresh);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        window.location.href = "main1.html";
+        // Role-based redirect (same logic as regular login)
+        const role = (data.user?.role || '').toLowerCase();
+        if (role === 'student') {
+            window.location.href = "selected.html";
+        } else {
+            // instructor or admin
+            window.location.href = "courses.html";
+        }
     })
     .catch(err => {
         console.log("GOOGLE LOGIN ERROR:", err);
         console.log(err.response?.data);
 
-        alert(
-            err.response?.data?.detail ||
-            "Google login failed"
-        );
+        const messageDiv = document.querySelector('.message');
+        const msgBlock   = messageDiv.querySelector('p');
+        msgBlock.textContent = err.response?.data?.detail || "Google login failed. Please try again.";
+        msgBlock.style.color = "red";
+        messageDiv.style.display = "block";
     });
 }
 
