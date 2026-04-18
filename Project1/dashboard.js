@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 2. Fetch all data in parallel for efficiency
     try {
-        const [progressRes, assignmentsRes, submissionsRes, profileRes, notificationsRes] = await Promise.all([
-            fetch(`${API}/progress/`, { headers: authHeaders() }).catch(e => null),
+        const [enrolledRes, assignmentsRes, submissionsRes, profileRes, notificationsRes] = await Promise.all([
+            fetch(`${API}/courses/enrolled/`, { headers: authHeaders() }).catch(e => null),
             fetch(`${API}/assignments/`, { headers: authHeaders() }).catch(e => null),
             fetch(`${API}/assignments/submissions/my-submissions/`, { headers: authHeaders() }).catch(e => null),
             fetch(`${API}/users/me/profile/`, { headers: authHeaders() }).catch(e => null),
@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Progress Handling (Our primary source for enrolled courses)
-        let progressReport = [];
-        if (progressRes && progressRes.ok) {
-            const data = await progressRes.json();
-            progressReport = data.results || data;
+        // Enrollment Handling (Now includes 0% progress courses)
+        let enrollments = [];
+        if (enrolledRes && enrolledRes.ok) {
+            const data = await enrolledRes.json();
+            enrollments = data.results || data;
         }
 
         // Assignments Handling
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const submissionMap = new Map(submissions.map(s => [s.assignment, s]));
         
         const pendingAssignments = assignments.filter(a => !submissionMap.has(a.id));
-        const completedCourses = progressReport.filter(p => p.percentage >= 100);
+        const completedCourses = enrollments.filter(e => e.is_completed || e.progress_percentage >= 100);
         
         // Calculate average score
         const gradedSubmissions = submissions.filter(s => s.score !== null);
@@ -89,13 +89,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 4. Render
         renderStats({
-            enrolledCount: progressReport.length,
+            enrolledCount: enrollments.length,
             completedCount: completedCourses.length,
             pendingCount: pendingAssignments.length,
             avgScore: avgScore
         });
 
-        renderEnrolledCourses(progressReport);
+        renderEnrolledCourses(enrollments);
         renderUpcomingAssignments(pendingAssignments);
         renderRecentActivity(notifications);
 
@@ -136,26 +136,26 @@ function renderStats(stats) {
     }
 }
 
-function renderEnrolledCourses(progressReport) {
+function renderEnrolledCourses(enrollments) {
     const list = document.getElementById('courseList');
     const empty = document.getElementById('emptyCourses');
     if (!list) return;
 
     list.innerHTML = '';
     
-    if (progressReport.length === 0) {
+    if (enrollments.length === 0) {
         empty.style.display = 'flex';
         return;
     }
 
     empty.style.display = 'none';
 
-    // Show top 4 enrolled courses by most recent (assuming order from API)
-    progressReport.slice(0, 4).forEach(p => {
-        const c = p.course;
-        const progress = Math.round(p.percentage || 0);
-        const statusClass = progress >= 100 ? 'completed' : 'in-progress';
-        const statusLabel = progress >= 100 ? 'Completed' : 'In Progress';
+    // Show top 4 enrolled courses by most recent
+    enrollments.slice(0, 4).forEach(e => {
+        const c = e.course;
+        const progress = Math.round(e.progress_percentage || 0);
+        const statusClass = (e.is_completed || progress >= 100) ? 'completed' : 'in-progress';
+        const statusLabel = (e.is_completed || progress >= 100) ? 'Completed' : 'In Progress';
 
         let thumbUrl = c.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=100&q=70';
         if (thumbUrl.startsWith('/')) thumbUrl = 'https://truemind.onrender.com' + thumbUrl;
@@ -197,7 +197,6 @@ function renderUpcomingAssignments(assignments) {
 
     empty.style.display = 'none';
 
-    // Sort by due date (closest first)
     const sorted = [...assignments].sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
 
     sorted.slice(0, 3).forEach(a => {
@@ -244,7 +243,6 @@ function renderRecentActivity(notifications) {
 
     empty.style.display = 'none';
 
-    // Show latest 5 notifications
     notifications.slice(0, 5).forEach(n => {
         const dotColors = {
             'info': 'blue',
@@ -270,7 +268,6 @@ function renderRecentActivity(notifications) {
     });
 }
 
-// Attach logout to avatar for quick access
 const navAvatar = document.getElementById('navAvatar');
 if (navAvatar) {
     navAvatar.style.cursor = 'pointer';
