@@ -308,7 +308,7 @@ async function deleteAssignment(id, title) {
 
 // ── POPULATE COURSE DROPDOWN ──
 function populateCourseDropdown() {
-    const select = document.querySelector('select[name="course"]');
+    const select = document.getElementById('courseSelect');
     if (!select) return;
     select.innerHTML = '<option value="">Select a course...</option>';
     courses.forEach(c => {
@@ -317,6 +317,58 @@ function populateCourseDropdown() {
         opt.textContent = c.title;
         select.appendChild(opt);
     });
+
+    // Listen for course changes to populate lessons
+    select.addEventListener('change', (e) => {
+        const courseId = e.target.value;
+        const lessonSelect = document.getElementById('lessonSelect');
+        if (!lessonSelect) return;
+
+        if (!courseId) {
+            lessonSelect.innerHTML = '<option value="">Select a lesson...</option>';
+            lessonSelect.disabled = true;
+            return;
+        }
+
+        fetchLessonsForCourse(courseId);
+    });
+}
+
+async function fetchLessonsForCourse(courseId) {
+    const lessonSelect = document.getElementById('lessonSelect');
+    if (!lessonSelect) return;
+
+    lessonSelect.innerHTML = '<option value="">Loading lessons...</option>';
+    lessonSelect.disabled = true;
+
+    try {
+        const token = getAccessToken();
+        const res = await fetch(`${API}/lessons/?course=${courseId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const lessonsList = data.results || data;
+
+            lessonSelect.innerHTML = '<option value="">Select a lesson...</option>';
+            if (lessonsList.length === 0) {
+                lessonSelect.innerHTML = '<option value="">No lessons found for this course</option>';
+            } else {
+                lessonsList.forEach(l => {
+                    const opt = document.createElement('option');
+                    opt.value = l.id;
+                    opt.textContent = l.title;
+                    lessonSelect.appendChild(opt);
+                });
+                lessonSelect.disabled = false;
+            }
+        } else {
+            lessonSelect.innerHTML = '<option value="">Failed to load lessons</option>';
+        }
+    } catch (err) {
+        console.error('fetchLessonsForCourse error:', err);
+        lessonSelect.innerHTML = '<option value="">Error loading lessons</option>';
+    }
 }
 
 // ── MOBILE MENU ──

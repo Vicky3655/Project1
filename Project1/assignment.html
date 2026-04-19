@@ -175,30 +175,37 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div>
                             <label>Course</label>
-                            <select name="course" required>
+                            <select name="course" id="courseSelect" required>
                                 <option value="">Select a course...</option>
                                 <!-- Populated by JS -->
                             </select>
                         </div>
                         <div>
-                            <label>Max Score</label>
-                            <input type="number" name="max_score" value="100" min="1">
+                            <label>Lesson</label>
+                            <select name="lesson" id="lessonSelect" required disabled>
+                                <option value="">Select a lesson...</option>
+                            </select>
                         </div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div>
+                            <label>Max Score</label>
+                            <input type="number" name="max_score" value="100" min="1">
+                        </div>
+                        <div>
                             <label>Due Date & Time</label>
                             <input type="datetime-local" name="due_date" required>
                         </div>
-                        <div>
-                            <label>Status</label>
-                            <select name="status">
-                                <option value="draft">Draft</option>
-                                <option value="published" selected>Published</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
+                    </div>
+
+                    <div>
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="draft">Draft</option>
+                            <option value="published" selected>Published</option>
+                            <option value="closed">Closed</option>
+                        </select>
                     </div>
 
                     <label>Reference Attachment (Optional)</label>
