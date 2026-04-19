@@ -374,7 +374,7 @@ nav {
 }
 
 @media (max-width: 640px) {
-    .content { margin-left: 0; padding: 80px 16px 24px; }
+    .content { margin-left: 0; padding: 80px 16px 24px;margin-bottom:20px; }
     .sidebar { width: 100%; height: 56px; top: auto; bottom: 0; flex-direction: row; padding: 0 8px; gap: 0; justify-content: space-around; }
     .sidebar-link::after { display: none; }
     nav { padding: 12px 16px; }
