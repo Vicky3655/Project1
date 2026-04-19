@@ -14,6 +14,10 @@ function authHeaders(extra = {}) {
     return { 'Authorization': `Bearer ${getAccessToken()}`, ...extra };
 }
 
+function isMobile() {
+    return window.innerWidth <= 640;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Initial State
     const userStr = localStorage.getItem('user');
@@ -150,8 +154,8 @@ function renderEnrolledCourses(enrollments) {
 
     empty.style.display = 'none';
 
-    // Show top 4 enrolled courses by most recent
-    enrollments.slice(0, 4).forEach(e => {
+    const courseLimit = isMobile() ? 2 : 4;
+    enrollments.slice(0, courseLimit).forEach(e => {
         const c = e.course;
         const progress = Math.round(e.progress_percentage || 0);
         const statusClass = (e.is_completed || progress >= 100) ? 'completed' : 'in-progress';
@@ -198,8 +202,9 @@ function renderUpcomingAssignments(assignments) {
     empty.style.display = 'none';
 
     const sorted = [...assignments].sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+    const assignmentLimit = isMobile() ? 2 : 3;
 
-    sorted.slice(0, 3).forEach(a => {
+    sorted.slice(0, assignmentLimit).forEach(a => {
         const days = getDaysLeft(a.due_date);
         let chipClass = 'normal';
         let chipText = `Due in ${days} days`;
@@ -243,7 +248,8 @@ function renderRecentActivity(notifications) {
 
     empty.style.display = 'none';
 
-    notifications.slice(0, 5).forEach(n => {
+    const activityLimit = isMobile() ? 3 : 5;
+    notifications.slice(0, activityLimit).forEach(n => {
         const dotColors = {
             'info': 'blue',
             'success': 'green',
