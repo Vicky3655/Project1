@@ -666,9 +666,15 @@ nav {
 }
 
 @media (max-width: 640px) {
-    /* Adjust nav for small screens */
+    /* Mobile nav - compact sizing */
     nav {
-        padding: 10px 16px;
+        padding: 8px 12px;
+        height: 52px;
+    }
+
+    .logo svg {
+        width: 24px;
+        height: 24px;
     }
 
     .logo span {
@@ -680,22 +686,40 @@ nav {
     }
 
     .nav-right {
-        gap: 8px;
+        gap: 4px;
     }
 
+    .nav-icon-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .avatar img {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Mobile sidebar - bottom bar with even spacing */
     .sidebar {
         width: 100%;
         height: 56px;
         top: auto;
         bottom: 0;
         flex-direction: row;
-        padding: 0 8px;
-        gap: 0;
+        padding: 0 12px;
+        gap: 8px;
         justify-content: space-around;
     }
 
     .sidebar-link {
         margin: 0;
+        width: 40px;
+        height: 40px;
+    }
+
+    .sidebar-link svg {
+        width: 22px;
+        height: 22px;
     }
 
     .logout-link {
@@ -707,14 +731,16 @@ nav {
         display: none;
     }
 
+    /* Mobile content area */
     .content {
         margin-left: 0;
-        padding: 16px 16px 80px;
+        margin-top: 52px;
+        padding: 12px 12px 72px;
     }
 
     .welcome-banner {
-        padding: 24px 20px;
-        border-radius: 16px;
+        padding: 20px 16px;
+        border-radius: 12px;
     }
 
     .welcome-illustration {
@@ -722,16 +748,53 @@ nav {
     }
 
     .welcome-banner h1 {
+        font-size: 18px;
+    }
+
+    .welcome-sub {
+        font-size: 13px;
+    }
+
+    /* Stats grid - prevent overflow */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .stat-icon-wrap {
+        width: 36px;
+        height: 36px;
+    }
+
+    .stat-icon-wrap svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .stat-value {
         font-size: 20px;
     }
 
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
+    /* Mobile panels - full width stacked */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .right-col {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .panel {
+        padding: 16px;
     }
 }
 
