@@ -168,24 +168,43 @@
                 <form id="add-assignment-form">
                     <label>Assignment Title</label>
                     <input type="text" name="title" required placeholder="e.g., Final Project">
-                    <label>Course</label>
-                    <select name="course" required>
-                        <!-- Populated by JS -->
-                        <option value="">Select a course...</option>
-                        <option value="web-development">Web Development</option>
-                        <option value="data-science">Data Science</option>
-                        <option value="cyber-security">Cyber Security</option>
-                        <option value="cloud-computing">Cloud Computing</option>
-                    </select>
-                    <label>Due Date</label>
-                    <input type="date" name="dueDate" required>
-                    <label>Status</label>
-                    <select name="status">
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                    <button type="submit" class="submit-btn">Create Assignment</button>
+                    
+                    <label>Description</label>
+                    <textarea name="description" placeholder="Provide clear instructions for the assignment..." rows="4"></textarea>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <label>Course</label>
+                            <select name="course" required>
+                                <option value="">Select a course...</option>
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label>Max Score</label>
+                            <input type="number" name="max_score" value="100" min="1">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <label>Due Date & Time</label>
+                            <input type="datetime-local" name="due_date" required>
+                        </div>
+                        <div>
+                            <label>Status</label>
+                            <select name="status">
+                                <option value="draft">Draft</option>
+                                <option value="published" selected>Published</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Reference Attachment (Optional)</label>
+                    <input type="file" name="attachment" style="padding-top: 8px; border: none; background: transparent;">
+
+                    <button type="submit" class="submit-btn" style="margin-top: 24px;">Create Assignment</button>
                 </form>
             </div>
         </div>

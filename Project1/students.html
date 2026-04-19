@@ -24,7 +24,7 @@
             <span>Talent Flow</span>
         </div>
         <div class="nav-right">
-            <span class="nav-role">Instructor</span>
+            <span class="nav-role" id="userRole">Instructor</span>
             <button class="nav-icon-btn" aria-label="Notifications">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor">
@@ -33,7 +33,7 @@
                 </svg>
             </button>
             <div class="avatar">
-                <img src="https://i.pravatar.cc/40?img=47" alt="Instructor">
+                <img id="navAvatar" src="https://i.pravatar.cc/40?img=47" alt="Instructor" onclick="window.location.href='profile.html'">
             </div>
         </div>
     </nav>
@@ -119,57 +119,98 @@
             </div>
         </div>
 
-        <div class="table-container">
-            <table>
+        <div class="table-wrap">
+            <table id="studentsTable">
                 <thead>
                     <tr>
-                        <th>Student</th>
-                        <th>Email</th>
-                        <th>Joined</th>
-                        <th>Courses</th>
-                        <th>Status</th>
+                        <th onclick="sortTable('name')">Student <span class="sort-icon">⇅</span></th>
+                        <th onclick="sortTable('email')">Email <span class="sort-icon">⇅</span></th>
+                        <th onclick="sortTable('course')">Course <span class="sort-icon">⇅</span></th>
+                        <th onclick="sortTable('progress')">Progress <span class="sort-icon">⇅</span></th>
+                        <th onclick="sortTable('status')">Status <span class="sort-icon">⇅</span></th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="studentTableBody">
+                <tbody id="tableBody">
                     <!-- Rendered by students.js -->
                 </tbody>
             </table>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                No students found matching your criteria.
+            </div>
         </div>
+
+        <div id="pagination" class="pagination"></div>
 
     </main>
 
     <!-- ADD STUDENT MODAL -->
-    <div class="modal" id="studentModal">
-        <div class="modal-content">
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
             <div class="modal-header">
                 <h2 id="modalTitle">Add Student</h2>
-                <button class="close-modal" id="closeModalBtn">&times;</button>
+                <button class="modal-close" id="closeModalBtn">&times;</button>
             </div>
-            <form id="studentForm">
-                <div class="form-row">
+            <div class="modal-body">
+                <div id="addStudentFields">
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" required>
+                        <label>Student Email</label>
+                        <input type="email" id="inputEmail" placeholder="Enter student's existing email">
+                        <p style="font-size: 11px; color: #64748B; margin-top: 4px;">* Student must already have an account to be enrolled manually.</p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
+
+                <div id="editStudentFields" style="display: none;">
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" id="inputName" readonly style="background: #F1F5F9;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password (Optional)</label>
-                    <input type="password" id="password" placeholder="Leave empty for auto-gen">
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Assigned Course</label>
+                    <select id="inputCourse">
+                        <option value="">Select a course</option>
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn-primary" id="saveBtn">Save Student</button>
+
+                <div class="form-row" style="display: flex; gap: 16px; margin-top: 16px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Status</label>
+                        <select id="inputStatus">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;" id="progressGroup">
+                        <label>Progress (%)</label>
+                        <input type="number" id="inputProgress" min="0" max="100" value="0" readonly style="background: #F1F5F9;">
+                    </div>
                 </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-save" id="saveBtn">Enroll Student</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div class="modal-overlay" id="deleteOverlay">
+        <div class="modal confirm-modal">
+            <div class="modal-header">
+                <h2>Unenroll Student</h2>
+                <button class="modal-close" id="closeDeleteBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to unenroll <strong><span id="deleteName"></span></strong>?</p>
+                <p style="font-size: 13px; color: #EF4444; margin-top: 8px;">* This student will lose access to the course materials.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                <button class="btn-delete" id="confirmDeleteBtn">Unenroll</button>
+            </div>
         </div>
     </div>
 

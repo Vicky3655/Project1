@@ -274,16 +274,11 @@ function initAddModal() {
         const fd = new FormData(form);
         const token = getAccessToken();
         try {
+            // FormData automatically sets Multipart Content-Type with Boundary
             const res = await fetch(`${API}/assignments/`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: fd.get('title'),
-                    course: parseInt(fd.get('course')),
-                    due_date: fd.get('dueDate'),
-                    description: 'No description',
-                    max_score: 100
-                })
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: fd
             });
             if (!res.ok) {
                 const err = await res.json();
