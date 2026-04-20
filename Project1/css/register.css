@@ -1,4 +1,4 @@
-*  {
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -265,4 +265,40 @@ p a {
 .role-btn svg {
     width: 20px;
     height: 20px;
+}
+
+/* Password Visibility Toggle */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 45px;
+    margin-bottom: 20px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+    color: #64748B;
+    transition: color 0.2s;
+}
+
+.toggle-password svg:hover {
+    color: #2563EB;
 }
