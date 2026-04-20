@@ -41,15 +41,15 @@ addClickEvent(learningDashboard, () => {
 });
 
 addClickEvent(markCompleteBtn, () => {
-  window.location.href = "/pages/project-module-2.html";
+  window.location.href = "pages/project-module-2.html";
 });
 
 addClickEvent(downloadPdf, () => {
-  window.location.href = "/pages/project-module-3.html";
+  window.location.href = "pages/project-module-3.html";
 });
 
 addClickEvent(module3Btn, () => {
-  window.location.href = "/pages/project-module-4.html";
+  window.location.href = "pages/project-module-4.html";
 });
 
 function addClickEvent(elements, callback) {
