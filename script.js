@@ -48,6 +48,7 @@ addClickEvent(learningDashboard, () => {
 });
 
 addClickEvent(markCompleteBtn, () => {
+
   const confirmed = confirm(
     "Are you sure you want to mark this module as complete?",
   );
@@ -76,6 +77,17 @@ addClickEvent(module3Btn, () => {
     alert("Module Completed Successfully 🎉");
     window.location.href = "/pages/project-module-4.html";
   }
+
+  window.location.href = "pages/project-module-2.html";
+});
+
+addClickEvent(downloadPdf, () => {
+  window.location.href = "pages/project-module-3.html";
+});
+
+addClickEvent(module3Btn, () => {
+  window.location.href = "pages/project-module-4.html";
+
 });
 
 function addClickEvent(elements, callback) {

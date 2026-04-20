@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talent Flow Register</title>
 
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="css/login.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,12 +15,13 @@
     <!-- Axios CDN -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
+
 <body>
 
     <div class="welcome-container">
 
         <div class="image">
-            <img src="4807.jpg" alt="Welcome Image" class="welcome-image">
+            <img src="images/4807.jpg" alt="Welcome Image" class="welcome-image">
         </div>
 
         <div class="welcome">
@@ -80,7 +82,7 @@
             }
 
             const url = 'https://truemind.onrender.com/api/v1/auth/register/';
-            
+
             btn.textContent = "Creating Account...";
             btn.disabled = true;
 
@@ -91,24 +93,43 @@
                 confirm_password: password,
                 role: role
             })
-            .then(response => {
-                alert("Registration Successful!");
-                window.location.href = 'login.html';
-            })
-            .catch(error => {
-                btn.textContent = "Create Account";
-                btn.disabled = false;
-                
-                if (error.response && error.response.data) {
-                    let errStr = '';
-                    for (const [k, v] of Object.entries(error.response.data)) {
-                        errStr += `${k}: ${v}\n`;
+                .then(response => {
+                    // Registration success - now auto-login
+                    const loginUrl = 'https://truemind.onrender.com/api/v1/auth/login/';
+                    
+                    axios.post(loginUrl, {
+                        email: email,
+                        password: password
+                    })
+                    .then(loginRes => {
+                        // SAVE TOKENS (Shared with login.html logic)
+                        localStorage.setItem("access_token", loginRes.data.access);
+                        localStorage.setItem("refresh_token", loginRes.data.refresh);
+                        localStorage.setItem("user", JSON.stringify(loginRes.data.user));
+
+                        alert("Registration Successful! Redirecting to selection...");
+                        window.location.href = 'main1.html';
+                    })
+                    .catch(loginErr => {
+                        console.error("Auto-login failed:", loginErr);
+                        alert("Account created, but we couldn't log you in automatically. Please log in manually.");
+                        window.location.href = 'login.html';
+                    });
+                })
+                .catch(error => {
+                    btn.textContent = "Create Account";
+                    btn.disabled = false;
+
+                    if (error.response && error.response.data) {
+                        let errStr = '';
+                        for (const [k, v] of Object.entries(error.response.data)) {
+                            errStr += `${k}: ${v}\n`;
+                        }
+                        alert("Registration Failed:\n" + errStr);
+                    } else {
+                        alert("Something went wrong. Please check your connection.");
                     }
-                    alert("Registration Failed:\n" + errStr);
-                } else {
-                    alert("Something went wrong. Please check your connection.");
-                }
-            });
+                });
 
         }
 
@@ -116,4 +137,5 @@
 
 
 </body>
+
 </html>

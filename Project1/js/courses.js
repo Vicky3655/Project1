@@ -21,10 +21,15 @@ async function fetchCourses() {
         if (userRole === 'instructor' || userRole === 'admin') {
             url = 'https://truemind.onrender.com/api/v1/courses/my-courses/';
         } else {
-            url = 'https://truemind.onrender.com/api/v1/courses/';
+            url = 'https://truemind.onrender.com/api/v1/courses/?';
+            const params = new URLSearchParams();
             if (currentDifficulty && currentDifficulty !== 'all') {
-                url += `?difficulty=${currentDifficulty}`;
+                params.append('difficulty', currentDifficulty);
             }
+            if (currentCategory && currentCategory !== 'all') {
+                params.append('category', currentCategory);
+            }
+            url += params.toString();
         }
 
         const response = await fetch(url, { headers });
@@ -59,7 +64,8 @@ async function fetchCourses() {
 
 let currentFilter = 'all';
 let currentSearch = '';
-let currentDifficulty = 'all'; // For URL-based filtering
+let currentDifficulty = 'all'; 
+let currentCategory = 'all'; // For URL-based filtering
 let isSortedAsc = true;
 
 // ── INIT ──
@@ -74,11 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 2. Initial Difficulty Filter from URL
+    // 2. Initial Filter from URL
     const urlParams = new URLSearchParams(window.location.search);
     const diffParam = urlParams.get('difficulty');
+    const catParam = urlParams.get('category');
+
     if (diffParam) {
         currentDifficulty = diffParam.toLowerCase();
+    }
+    if (catParam) {
+        currentCategory = catParam;
     }
 
     initFilters();
