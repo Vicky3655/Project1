@@ -37,19 +37,45 @@ addClickEvent(certificate, () => {
 });
 
 addClickEvent(learningDashboard, () => {
-  alert("Returing to your dashboard...");
+  // alert("Returing to your dashboard...");
+  const conformDashboard = confirm(
+    "Are you sure you want to return to your dashboard?",
+  );
+
+  if (conformDashboard) {
+    window.location.href = "/index.html";
+  }
 });
 
 addClickEvent(markCompleteBtn, () => {
-  window.location.href = "/pages/project-module-2.html";
+  const confirmed = confirm(
+    "Are you sure you want to mark this module as complete?",
+  );
+
+  if (confirmed) {
+    alert("Module Completed Successfully 🎉");
+    window.location.href = "/pages/project-module-2.html";
+  }
 });
 
 addClickEvent(downloadPdf, () => {
-  window.location.href = "/pages/project-module-3.html";
+  const confirmed = confirm("Are you sure you want to download the PDF file?");
+
+  if (confirmed) {
+    alert("File Downloaded 🎉.");
+    window.location.href = "/pages/project-module-3.html";
+  }
 });
 
 addClickEvent(module3Btn, () => {
-  window.location.href = "/pages/project-module-4.html";
+  const confirmed = confirm(
+    "Are you sure you want to mark this module as complete?",
+  );
+
+  if (confirmed) {
+    alert("Module Completed Successfully 🎉");
+    window.location.href = "/pages/project-module-4.html";
+  }
 });
 
 function addClickEvent(elements, callback) {
