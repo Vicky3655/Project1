@@ -62,16 +62,12 @@
 
     <section class="content">
         <h1>Choose a Path</h1>
-        <form>
+        <form id="path-form">
             <label for="path-select">Search for a Course:</label><br>
-            <select name="path" id="path-select">
-                <option value="">--Please choose an option--</option>
-                <option value="web-development">Web Development</option>
-                <option value="data-science">Data Science</option>
-                <option value="cyber-security">Cyber Security</option>
-                <option value="cloud-computing">Cloud Computing</option>
+            <select name="path" id="path-select" required>
+                <option value="">--Loading categories...--</option>
             </select><br><br>
-            <a href="selected.html"><button type="button" class="select-btn">Select Path</button></a>
+            <button type="button" class="select-btn" onclick="selectPath()">Select Path</button>
         </form>
     </section>
 <script>
@@ -85,6 +81,34 @@
         const user = response.data;
         document.getElementById("student_name").textContent = user.role.toUpperCase();
     })
+    .catch(err => console.error("Auth error:", err));
+
+    // Fetch Categories
+    axios.get("https://truemind.onrender.com/api/v1/courses/categories/")
+    .then(response => {
+        const select = document.getElementById("path-select");
+        select.innerHTML = '<option value="">--Please choose an option--</option>';
+        response.data.results.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+    })
+    .catch(err => {
+        console.error("Failed to load categories:", err);
+        document.getElementById("path-select").innerHTML = '<option value="">Failed to load categories</option>';
+    });
+
+    function selectPath() {
+        const select = document.getElementById("path-select");
+        const categoryId = select.value;
+        if (!categoryId) {
+            alert("Please select a path first!");
+            return;
+        }
+        window.location.href = `selected.html?category=${categoryId}`;
+    }
 </script>
 </body>
 </html>

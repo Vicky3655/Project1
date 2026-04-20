@@ -94,8 +94,27 @@
                 role: role
             })
                 .then(response => {
-                    alert("Registration Successful!");
-                    window.location.href = 'login.html';
+                    // Registration success - now auto-login
+                    const loginUrl = 'https://truemind.onrender.com/api/v1/auth/login/';
+                    
+                    axios.post(loginUrl, {
+                        email: email,
+                        password: password
+                    })
+                    .then(loginRes => {
+                        // SAVE TOKENS (Shared with login.html logic)
+                        localStorage.setItem("access_token", loginRes.data.access);
+                        localStorage.setItem("refresh_token", loginRes.data.refresh);
+                        localStorage.setItem("user", JSON.stringify(loginRes.data.user));
+
+                        alert("Registration Successful! Redirecting to selection...");
+                        window.location.href = 'main1.html';
+                    })
+                    .catch(loginErr => {
+                        console.error("Auto-login failed:", loginErr);
+                        alert("Account created, but we couldn't log you in automatically. Please log in manually.");
+                        window.location.href = 'login.html';
+                    });
                 })
                 .catch(error => {
                     btn.textContent = "Create Account";

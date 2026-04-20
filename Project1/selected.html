@@ -61,11 +61,25 @@
 
     <section class="content">
         <h1>Choose your strength</h1>
-            <a href="courses.html?difficulty=beginner"><button type="button" class="select-btn">Beginner</button></a>
-            <a href="courses.html?difficulty=intermediate"><button type="button" class="select-btn">Intermediate</button></a>
-            <a href="courses.html?difficulty=advanced"><button type="button" class="select-btn">Advanced</button></a>
+            <button type="button" class="select-btn" onclick="selectDifficulty('beginner')">Beginner</button>
+            <button type="button" class="select-btn" onclick="selectDifficulty('intermediate')">Intermediate</button>
+            <button type="button" class="select-btn" onclick="selectDifficulty('advanced')">Advanced</button>
     </section>
 
 </body>
+<script>
+    // Extract category ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get('category');
+
+    function selectDifficulty(difficulty) {
+        if (!categoryId) {
+            alert("No category selected. Returning to path selection.");
+            window.location.href = "main1.html";
+            return;
+        }
+        window.location.href = `courses.html?category=${categoryId}&difficulty=${difficulty}`;
+    }
+</script>
 <script src="js/auth.js"></script>
 </html>
