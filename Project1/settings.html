@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="allowed-roles" content="instructor,admin,student">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Talent Flow – Settings</title>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+            <span>Talent Flow</span>
+        </div>
+        <div class="nav-right">
+            <span class="nav-role">Instructor</span>
+            <button class="nav-icon-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
+            </button>
+            <div class="avatar">
+                <img src="https://i.pravatar.cc/40?img=47" alt="Instructor">
+            </div>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a href="dashboard.html" class="sidebar-link" data-tip="Dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+            </svg>
+        </a>
+        <a href="courses.html" class="sidebar-link" data-tip="Courses">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+        </a>
+        <a href="assignment.html" class="sidebar-link" data-tip="Assignments">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            </svg>
+        </a>
+       
+        <a href="settings.html" class="sidebar-link active" data-tip="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z" />
+            </svg>
+        </a>
+        <a href="#" class="sidebar-link logout-link" data-tip="Logout" onclick="logout(); return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+            </svg>
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="content">
+
+        <h1 class="page-title">Settings</h1>
+
+        <div class="settings-layout">
+
+            <!-- Left settings menu -->
+            <nav class="settings-nav">
+                <button class="settings-nav-btn active" data-tab="profile">Profile</button>
+                <button class="settings-nav-btn" data-tab="account">Account</button>
+                <button class="settings-nav-btn" data-tab="notifications">Notifications</button>
+                <button class="settings-nav-btn" data-tab="security">Security</button>
+            </nav>
+
+            <!-- Right panel -->
+            <div class="settings-panel">
+
+                <!-- ── PROFILE TAB ── -->
+                <div class="tab-pane active" id="tab-profile">
+                    <div class="profile-top">
+                        <div class="avatar-wrap">
+                            <img src="https://i.pravatar.cc/160?img=47" alt="Profile Photo" id="profileImg">
+                            <button class="edit-avatar-btn" id="editAvatarBtn" title="Change photo">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.8" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                </svg>
+                            </button>
+                            <input type="file" id="avatarInput" accept="image/*" style="display:none">
+                        </div>
+                        <h2 class="profile-name" id="profileDisplayName">Ikekhuamen Favour</h2>
+                    </div>
+
+                    <div class="profile-fields">
+                        <div class="field-row">
+                            <label>Email:</label>
+                            <input type="email" id="fieldEmail" value="ikekhuamenfavour@gmail.com">
+                        </div>
+                        <div class="field-row">
+                            <label>Bio:</label>
+                            <input type="text" id="fieldBio" value="Product Designer & Creator">
+                        </div>
+                        <div class="field-row">
+                            <label>Full Name:</label>
+                            <input type="text" id="fieldName" value="Ikekhuamen Favour">
+                        </div>
+                        <div class="field-row">
+                            <label>Role:</label>
+                            <input type="text" id="fieldRole" value="Instructor" readonly>
+                        </div>
+                    </div>
+
+                    <button class="save-btn" id="saveProfileBtn">Save Changes</button>
+                    <div class="save-toast" id="saveToast">✓ Changes saved!</div>
+                </div>
+
+                <!-- ── ACCOUNT TAB ── -->
+                <div class="tab-pane" id="tab-account">
+                    <h3 class="tab-heading">Account Settings</h3>
+                    <div class="profile-fields">
+                        <div class="field-row">
+                            <label>Username:</label>
+                            <input type="text" value="favour.ikekhuamen">
+                        </div>
+                        <div class="field-row">
+                            <label>Language:</label>
+                            <select>
+                                <option>English</option>
+                                <option>French</option>
+                                <option>Spanish</option>
+                            </select>
+                        </div>
+                        <div class="field-row">
+                            <label>Timezone:</label>
+                            <select>
+                                <option>Africa/Lagos (WAT)</option>
+                                <option>UTC</option>
+                                <option>America/New_York (EST)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="save-btn">Save Changes</button>
+                    <div class="danger-zone">
+                        <h4>Danger Zone</h4>
+                        <button class="danger-btn">Delete Account</button>
+                    </div>
+                </div>
+
+                <!-- ── NOTIFICATIONS TAB ── -->
+                <div class="tab-pane" id="tab-notifications">
+                    <h3 class="tab-heading">Notification Preferences</h3>
+                    <div class="toggle-list">
+                        <div class="toggle-row">
+                            <div>
+                                <p class="toggle-label">Email Notifications</p>
+                                <p class="toggle-desc">Receive updates via email</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <p class="toggle-label">Assignment Reminders</p>
+                                <p class="toggle-desc">Get notified before due dates</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <p class="toggle-label">New Student Enrollments</p>
+                                <p class="toggle-desc">When a new student joins your course</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <p class="toggle-label">Platform Updates</p>
+                                <p class="toggle-desc">News and feature announcements</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="save-btn">Save Preferences</button>
+                </div>
+
+                <!-- ── SECURITY TAB ── -->
+                <div class="tab-pane" id="tab-security">
+                    <h3 class="tab-heading">Security Settings</h3>
+                    <div class="profile-fields">
+                        <div class="field-row">
+                            <label>Current Password:</label>
+                            <div class="password-wrap">
+                                <input type="password" id="currentPwd" placeholder="Enter current password">
+                                <button class="eye-btn" onclick="togglePwd('currentPwd', this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <label>New Password:</label>
+                            <div class="password-wrap">
+                                <input type="password" id="newPwd" placeholder="Enter new password">
+                                <button class="eye-btn" onclick="togglePwd('newPwd', this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="strength-bar" id="strengthBar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-label" id="strengthLabel"></span>
+                        </div>
+                        <div class="field-row">
+                            <label>Confirm Password:</label>
+                            <div class="password-wrap">
+                                <input type="password" id="confirmPwd" placeholder="Confirm new password">
+                                <button class="eye-btn" onclick="togglePwd('confirmPwd', this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="handlePasswordChange()">Update Password</button>
+                    <div class="save-toast" id="pwdToast"></div>
+
+                    <div class="security-extras">
+                        <div class="toggle-row">
+                            <div>
+                                <p class="toggle-label">Two-Factor Authentication</p>
+                                <p class="toggle-desc">Add an extra layer of security</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+
+</html>
